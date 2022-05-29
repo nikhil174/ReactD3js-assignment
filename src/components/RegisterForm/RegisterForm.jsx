@@ -1,78 +1,76 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FormInput from "../FormInput/FormInput";
 import "./registerForm.scss";
 
 function RegisterForm() {
-  const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
-  const [nameInputTouched, setNameInputTouched] = useState(false);
-
-  const confirmRef = useRef();
-  const [password, setPassword] = useState("");
-  const [passwordInputTouched, setPasswordInputTouched] = useState(false);
-  const [passwordIsValid, setPasswordIsValid] = useState(false);
-  const [passwordMatch, setPasswordMatch] = useState(true);
-  const phoneRef = useRef();
-  const emailRef = useRef();
-  const [emailIsValid, setEmailIsValid] = useState(true);
-  const [phoneIsValid, setPhoneIsValid] = useState(true);
-  const [formValid, setFormValid] = useState(false);
-
   const navigate = useNavigate();
 
-  const handleNameChange = (e) => {
-    setNameInputTouched(true);
-    setEnteredName(e.target.value);
-
-    console.log(enteredName);
-    if (enteredName && enteredName.trimStart()) {
-      setEnteredNameIsValid(true);
-    } else {
-      setEnteredNameIsValid(false);
-    }
+  const initialData = {
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    phone: "",
   };
 
-  const reset = () => {
-    setEmailIsValid(true);
-    setPhoneIsValid(true);
-    setPasswordMatch(true);
-  };
+  const [values, setValues] = useState(initialData);
 
-  const handlePasswordChange = (e) => {
-    setPasswordInputTouched(true);
-    setPassword(e.target.value);
+  const inputs = [
+    {
+      id: 1,
+      name: "email",
+      type: "email",
+      errorMessage: "email is not valid",
+      label: "Your email address",
+      required: true,
+    },
+    {
+      id: 2,
+      name: "password",
+      type: "password",
+      errorMessage:
+        "password should be 6-10 characters and include at least 1 letter, 1 number and 1 special character",
+      label: "Your Password",
+      pattern:
+        "^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,10}$",
+      required: true,
+    },
+    {
+      id: 3,
+      name: "confirmPassword",
+      type: "password",
+      errorMessage: "passwords do not match!",
+      label: "Confirm your password",
+      pattern: values.password,
+      required: true,
+    },
+    {
+      id: 4,
+      name: "name",
+      errorMessage:
+        "name should be of two words seperated by a space e.g. Nikhil Srivastava",
+      label: "Your full name",
+      pattern: "^[a-zA-z]([-']?[a-zA-Z]+)*( [a-zA-Z]([-']?[a-zA-Z]+)*)+$",
+      required: true,
+    },
+    {
+      id: 5,
+      name: "phone",
+      errorMessage: "phone number is not valid",
+      label: "Your phone number",
+      pattern: "^[0-9]{10,10}$",
+      required: true,
+    },
+  ];
 
-    if (password.length >= 5) {
-      setPasswordIsValid(true);
-    } else {
-      setPasswordIsValid(false);
-    }
+  const handleChange = (e) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    reset();
-
-    setPasswordInputTouched(true);
-    setNameInputTouched(true);
-    if (confirmRef.current.value !== password) {
-      setPasswordMatch(false);
-    }
-    if (!emailRef.current.value.includes("@")) {
-      setEmailIsValid(false);
-    }
-    if (phoneRef.current.value.length !== 10) {
-      setPhoneIsValid(false);
-    }
-
-    if (passwordIsValid && emailIsValid && phoneIsValid && passwordMatch) {
-      setFormValid(true);
-    } else {
-      return;
-    }
-
-    if (formValid) navigate("/chart");
+    navigate("/chart");
   };
 
   return (
@@ -81,62 +79,19 @@ function RegisterForm() {
         <h2>Create an account</h2>
 
         <form onSubmit={submitHandler}>
-          <div className="rform__formcontrol">
-            <label htmlFor="email">Your email address</label>
-            <br />
-            <input type="email" id="email" ref={emailRef} />
-            {!emailIsValid && (
-              <p className="rform__error">email is not valid</p>
-            )}
-          </div>
-          <div className="rform__formcontrol">
-            <label htmlFor="password">Your password</label>
-            <br />
-            <input
-              type="password"
-              id="password"
-              onChange={handlePasswordChange}
+          {inputs.map((input) => (
+            <FormInput
+              key={input.id}
+              {...input}
+              value={values[input.name]}
+              onChange={handleChange}
             />
-            {passwordInputTouched && !passwordIsValid && (
-              <p className="rform__error">password must be of 6 charecters</p>
-            )}
-          </div>
-          <div className="rform__formcontrol">
-            <label htmlFor="confirmpassword">Confirm your password</label>
-            <br />
-            <input type="password" id="confirmpassword" ref={confirmRef} />
-            {!passwordMatch && (
-              <p className="rform__error">passwords do not match</p>
-            )}
-          </div>
-          <div className="rform__formcontrol">
-            <label htmlFor="name">Your full name</label>
-            <br />
-            <input
-              type="text"
-              id="name"
-              value={enteredName}
-              onChange={handleNameChange}
-            />
-            {!enteredNameIsValid && nameInputTouched && (
-              <p className="rform__error">name is not valid</p>
-            )}
-          </div>
-          <div className="rform__formcontrolphone">
-            <label htmlFor="phone">Your phone number</label>
-            <br />
-            <input type="text" id="phone" ref={phoneRef} />
-            {!phoneIsValid && (
-              <p className="rform__error">phone number is not valid</p>
-            )}
-          </div>
-          <div className="rform__formcontrolterms">
-            <input type="checkbox" />
+          ))}
+          <div className="rform__terms">
+            <input type="checkbox" id="terms" required />
             <label htmlFor="terms">I read and agree Terms and Conditions</label>
           </div>
-          <div className="form__actions">
-            <button type="submit">Create account</button>
-          </div>
+          <button>Submit</button>
         </form>
       </div>
     </div>

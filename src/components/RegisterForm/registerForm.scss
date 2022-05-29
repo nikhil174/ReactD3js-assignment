@@ -13,50 +13,17 @@
 
     h2 {
       color: black;
-      padding-bottom: 2rem;
     }
-  }
-  .rform__formcontrol {
-    margin-bottom: 1rem;
-  }
-
-  .rform__formcontrol input,
-  .rform__formcontrol select {
-    font: inherit;
-    color: $lightgray;
-    padding: 0.7rem;
-    width: 90%;
-    margin-top: 0.3rem;
-    border: 0.5px solid $lightgray;
-    border-radius: 4px;
-    background-color: $white;
-  }
-  .rform__formcontrolphone input {
-    padding: 0.7rem;
-    width: 45%;
-    margin-top: 0.3rem;
-    border: 0.5px solid $lightgray;
-    background-color: $white;
-    border-radius: 4px;
-  }
-  .rform__formcontrolterms {
-    margin: 1.5rem 0;
-    color: black;
-    background-color: $white;
-  }
-  .rform__formcontrol input:focus {
-    outline: none;
-  }
-  .rform__formcontrolterms input {
-    height: 1.2rem;
-    width: 1.2rem;
-    margin-right: 0.6rem;
-  }
-  .rform__error {
-    color: red;
-    font-size: 12px;
-    margin: 0;
-    padding: 0;
+    .rform__terms {
+      margin: 1rem 0;
+      color: black;
+      background-color: $white;
+    }
+    .rform__terms input {
+      height: 1.2rem;
+      width: 1.2rem;
+      margin-right: 0.6rem;
+    }
   }
 
   button {
