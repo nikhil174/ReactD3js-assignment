@@ -24,10 +24,20 @@ const ChartPage = () => {
   const [ydata, setYdata] = useState(initialData);
   const [change, setChange] = useState(false);
 
+  const onMouseOver = (d, i) => {
+    d3.select(this)
+      .transition()
+      .duration(300)
+      .attr("width", xscale.bandwidth() + 3);
+    // .attr("height", function (d) {
+    //   return height - yscale(d.value) - 10;
+    // });
+  };
+
   const handleClick = () => {
     for (let i = 0; i < 12; i++) {
       initialData[i] = Math.floor(Math.random() * 50);
-      if (initialData[i] < 10) initialData[i] += 15;
+      if (initialData[i] < 4) initialData[i] += 5;
     }
     setYdata(initialData);
     setChange(true);
@@ -52,7 +62,7 @@ const ChartPage = () => {
     .scaleBand()
     .domain(xdata)
     .range([marginLeft, xdim + marginLeft])
-    .padding(0.1);
+    .padding(0.2);
 
   const yscale = d3
     .scaleLinear()
@@ -92,6 +102,12 @@ const ChartPage = () => {
       .data(scaledYData)
       .enter()
       .append("rect")
+      .transition()
+      .ease(d3.easeBackInOut)
+      .duration(400)
+      .delay(function (d, i) {
+        return (i + 1) * 40;
+      })
       .attr("width", xscale.bandwidth())
       .attr("id", "bars")
       .attr("height", (d) => {
@@ -103,8 +119,12 @@ const ChartPage = () => {
       .attr("y", (d) => {
         return marginTop + ydim - d;
       })
-      .attr("fill", "#2eaefe")
-      .attr("stroke", "black");
+      .attr("fill", function (d, i) {
+        if (d < 140) return "#7692ff";
+        else if (d < 280) return "#4abb72";
+        else if (d < 380) return "#ff9f1c";
+        else return "#fe6d73";
+      });
   };
 
   const addText = (svg) => {
@@ -129,7 +149,7 @@ const ChartPage = () => {
 
   return (
     <div className="chartpage">
-      <div className="canvas" style={{ transition: "all 3s ease" }}>
+      <div className="canvas">
         <svg
           viewBox={`0 0 ${xdim + marginLeft + marginRight} ${
             ydim + marginTop + marginBottom
@@ -137,7 +157,7 @@ const ChartPage = () => {
           preserveAspectRatio="xMinYMin"
           width="100%"
           height="100%"
-          style={{ backgroundColor: "beige" }}
+          style={{ backgroundColor: "#f8f7ff" }}
           ref={canvas}
         ></svg>
       </div>
